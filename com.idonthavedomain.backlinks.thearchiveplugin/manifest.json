@@ -1,0 +1,29 @@
+{
+  "appVersion" : "1.8.0",
+  "authors" : [
+    {
+      "name" : "JW"
+    }
+  ],
+  "dependencies" : [
+
+  ],
+  "description" : "Shows backlinks for the current note in a separate window.\n\nThis plugin aims to tackle the challenge of understanding note's backlinks when filenames of the notes are pure zettel IDs.",
+  "identifier" : "com.idonthavedomain.backlinks",
+  "input" : {
+    "notes" : [
+      "selected",
+      "all"
+    ],
+    "pasteboard" : false,
+    "text" : [
+      "all"
+    ]
+  },
+  "output" : {
+    "showPreview" : "buffer"
+  },
+  "releaseDate" : "2026-02-09",
+  "title" : "Backlinks",
+  "version" : "0.0.1"
+}
