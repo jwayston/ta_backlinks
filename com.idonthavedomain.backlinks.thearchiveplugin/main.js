@@ -52,7 +52,7 @@ searchResults.results.forEach(elem =>
 	}
 
 	const noteHeader = extractHeader(elem.content);
-	const textLine = `${idx}. [[${noteId}]] ${noteHeader}\n`;
+	const textLine = `${idx}. ${noteHeader} [[${noteId}]]\n`;
 
 	outputText += textLine;
 	idx++;
