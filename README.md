@@ -1,4 +1,4 @@
-# Backlinks
+# Backlinks plugin for [The Archive](https://zettelkasten.de/the-archive/)
 
 This plugin shows the backlinks of the current note in a separate window.
 
