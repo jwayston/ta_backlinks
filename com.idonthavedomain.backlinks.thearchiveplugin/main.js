@@ -8,7 +8,7 @@ Author: JW
 "use strict";
 
 const LINEBR = "\n";
-const idRegex = new RegExp(/^([0-9]{10,12})/);
+const idRegex = new RegExp(/^([0-9]{10,12}|^.*?)(\s|$)/);
 const noteHeaderRegexp = new RegExp("^# (.+)\\n");
 
 function extractHeader(noteContent)
