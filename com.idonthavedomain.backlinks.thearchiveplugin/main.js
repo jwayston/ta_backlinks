@@ -9,7 +9,7 @@ Author: JW
 
 const LINEBR = "\n";
 const idRegex = new RegExp(/^([0-9]{10,12}|^.*?)(\s|$)/);
-const noteHeaderRegexp = new RegExp("^# (.+)\\n");
+const noteHeaderRegexp = new RegExp("(?<=^|\\n)# (.+)\\n");
 
 function extractHeader(noteContent)
 {
