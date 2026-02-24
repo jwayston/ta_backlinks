@@ -23,7 +23,7 @@
   "output" : {
     "showPreview" : "buffer"
   },
-  "releaseDate" : "2026-02-23",
+  "releaseDate" : "2026-02-24",
   "title" : "Backlinks",
-  "version" : "0.0.4"
+  "version" : "0.1.0"
 }
