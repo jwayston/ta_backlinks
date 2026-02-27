@@ -7,66 +7,34 @@ Author: JW
 
 "use strict";
 
-const currentNote = input.notes.selected[0].filename;
-const regexId = new RegExp(/^([0-9]{8,14}|^.*?)(\s.*|$)/);
-const regexNoteHeader = new RegExp("(?<=^|\\n)# (.+)\\n");
-const currentNoteId = getCurrentNoteId();
 
+const getHeader = content => 
+    content.match(/(?:^|\n)# (.+)/)?.[1] ?? "<No H1 header>";
 
-function extractHeader(noteContent)
-{
-    const contentMatch = noteContent.match(regexNoteHeader);
-    return contentMatch ? contentMatch[1] : null;
+const getNoteData = (filename, content) => {
+    const [_, id, desc] = filename.match(/^(\d{6,}\S*)\s*(.*)/) ?? [];
+    return id ? { id, desc: desc.trim() || getHeader(content) } : null;
 }
 
-function getCurrentNoteId()
-{
-    const matchId = currentNote.match(regexId);
+const parseBackLinks = (note) => {
+    if (!note?.filename) return "<Error in note object data>";
 
-    if (!matchId)
-        cancel("Could not parse ID from the current note's filename!");
-    return matchId[1];
-}
+    const data = getNoteData(note.filename, note.content ?? "");
+    const results = data?.id ? app.search(data.id)?.results : null;
 
-function parseBacklinks()
-{
-    let outputText = "";
-    const searchResults = app.search(currentNoteId);
-
-    let idx = 0;
-    for(const note of searchResults.results)
-    {
-        let noteId = note.filename;
-        let noteFileHeader;
-        let noteHeader = extractHeader(note.content);;
-
-        // Don't include current file in the results
-        if (note.filename == currentNote)
-            continue;
-
-        const matchNoteId = note.filename.match(regexId);
-
-        if (matchNoteId)
-        {
-            noteId = matchNoteId[1];
-            noteFileHeader = matchNoteId[2].replace(" ", "");
-        }
-
-        if (noteFileHeader)
-            noteHeader = noteFileHeader;
-        else
-            if (noteHeader === null)
-                noteHeader = "<No header or file description available>";
-
-        const textLine = `${idx+1}. ${noteHeader} [[${noteId}]]\n`;
-
-        outputText += textLine;
-        idx++;
-    }
-
-    return outputText;
+    return Array.isArray(results) ? results
+        .filter(l => !l.filename.startsWith(data.id))
+        .map((l, i) => {
+            const d = getNoteData(l.filename, l.content);
+            return `${i+1}. ${d?.desc ?? "<no description>"} [[${d?.id ?? l.filename}]]`;
+        }).join("\n") : "";
 }
 
 
-output.display.content = `# Backlinks for "${currentNote}"\n\n${parseBacklinks()}`;
+const note = input.notes.selected[0];
+if (!note) cancel("Make sure the note is selected on the side bar");
+const data = getNoteData(note.filename, note.content);
+
+output.display.content = 
+    `# ${data?.desc ?? ""} (${data?.id ?? ""})\n## Backlinks\n\n` + parseBackLinks(note);
 
