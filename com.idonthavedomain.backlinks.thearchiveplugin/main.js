@@ -17,24 +17,17 @@ const getNoteData = (filename, content) => {
 }
 
 const parseBackLinks = (note) => {
-    if (!note?.filename) return "<Error in note object data>";
+	if (!note?.filename) return "Error! No note selected on the sidebar?";
 
-    const data = getNoteData(note.filename, note.content ?? "");
-    const results = data?.id ? app.search(data.id)?.results : null;
+	const data = getNoteData(note.filename, note.content);
+	const results = data?.id ? app.search(data.id)?.results : null;
+	const out = Array.isArray(results) ? results
+		.filter(l => !l.filename.startsWith(data.id))
+		.map((l, i) => [getNoteData(l.filename, l.content), l.filename])
+		.map(([d, f], i) => `${i+1}. ${d?.desc ?? "<no info>"} [[${d?.id ?? f}]]`)
+		.join("\n") : "";
 
-    return Array.isArray(results) ? results
-        .filter(l => !l.filename.startsWith(data.id))
-        .map((l, i) => {
-            const d = getNoteData(l.filename, l.content);
-            return `${i+1}. ${d?.desc ?? "<no description>"} [[${d?.id ?? l.filename}]]`;
-        }).join("\n") : "";
+	return `# ${data?.desc ?? ""} (${data?.id ?? ""})\n## Backlinks\n\n${out}`;
 }
 
-
-const note = input.notes.selected[0];
-if (!note) cancel("Make sure the note is selected on the side bar");
-const data = getNoteData(note.filename, note.content);
-
-output.display.content = 
-    `# ${data?.desc ?? ""} (${data?.id ?? ""})\n## Backlinks\n\n` + parseBackLinks(note);
-
+output.display.content = parseBackLinks(input.notes.selected[0]);
